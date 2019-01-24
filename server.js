@@ -11,10 +11,12 @@ const typeDefs = `
     }
   type Book { 
       name: String,
-      numberOfPages: String,
-      povCharacters: [String]
+      authors: [String]
+      characters: [Character]
   }
-
+  type Character {
+      name: String
+  }
 `;
 
 // The resolvers
@@ -28,6 +30,20 @@ const resolvers = {
         return books;
       }
   },
+  Book: {
+      characters: async(parent) => {
+        const { povCharacters } = parent; 
+
+        if(povCharacters && povCharacters[0]) {
+             let { data: character } = await axios.get(povCharacters[0]);
+             console.log(character)
+             return [character];
+        } else {
+            return [];
+        }
+      }
+  }
+
 };
 
 // Put together a schema
